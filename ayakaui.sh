@@ -3,13 +3,13 @@
 rm -rf .repo/local_manifests
 
 # repo init rom
-repo init -u https://github.com/yaap/manifest.git -b sixteen --depth=1 --git-lfs
+repo init -u https://github.com/AyakaUI/android_manifest.git -b sixteen --depth=1 --git-lfs
 echo "=================="
 echo "Repo init success"
 echo "=================="
 
 # Local manifests
-git clone https://github.com/Alromine95/Local-manifest.git -b main .repo/local_manifests
+git clone https://github.com/kitsunee02/Local-manifests.git -b main .repo/local_manifests
 echo "============================"
 echo "Local manifest clone success"
 echo "============================"
@@ -27,7 +27,7 @@ echo "packages done"
 echo "============="
 
 # Export
-export BUILD_USERNAME=Qbhi
+export BUILD_USERNAME=Fiyuu
 export BUILD_HOSTNAME=crave
 export BUILD_BROKEN_MISSING_REQUIRED_MODULES=true
 export IGNORE_PATCH_ERRORS=true
@@ -57,7 +57,7 @@ source build/envsetup.sh
 echo "============="
 
 # Lunch
-lunch yaap_blossom-bp2a-userdebug
+lunch lineage_blossom-bp2a-userdebug;
 
 # Build
-m yaap
+m bacon
