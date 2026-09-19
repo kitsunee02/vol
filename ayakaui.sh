@@ -28,6 +28,7 @@ echo "============="
 
 # Export
 export BUILD_USERNAME=Fiyuu
+export TARGET_BUILD_GAPPS=false
 export BUILD_HOSTNAME=crave
 export BUILD_BROKEN_MISSING_REQUIRED_MODULES=true
 export IGNORE_PATCH_ERRORS=true
