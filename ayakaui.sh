@@ -26,8 +26,7 @@ echo "============="
 /opt/crave/resync.sh;
 
 # Installing packages 
-sudo apt-get update && sudo apt-get install patchelf coreutils protobuf-compiler libprotobuf-dev -y 
-echo "============="
+sudo apt-get update && sudo apt-get install patchelf coreutils -y echo "============="
 echo "packages done"
 echo "============="
 
