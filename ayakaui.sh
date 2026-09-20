@@ -26,7 +26,8 @@ echo "============="
 /opt/crave/resync.sh;
 
 # Installing packages 
-sudo apt-get update && sudo apt-get install patchelf coreutils -y echo "============="
+sudo apt-get update && sudo apt-get install patchelf coreutils -y 
+echo "============="
 echo "packages done"
 echo "============="
 
@@ -52,7 +53,7 @@ source build/envsetup.sh
 echo "============="
 
 # Lunch
-lunch lineage_blossom-bp2a-userdebug;
+lunch lineage_blossom-bp2a-userdebug
 
 # Build
 m bacon
