@@ -15,10 +15,11 @@ echo "Local manifest clone success"
 echo "============================"
 
 # Build Sync
-curl -sf https://raw.githubusercontent.com/xc112lg/lg_releases/refs/heads/main/resync.sh | bash
+# curl -sf https://raw.githubusercontent.com/xc112lg/lg_releases/refs/heads/main/resync.sh | bash
 echo "============="
-echo "Sync success"
+echo "Sync"
 echo "============="
+/opt/crave/resync.sh
 
 # Installing packages 
 sudo apt-get update && sudo apt-get install patchelf coreutils protobuf-compiler libprotobuf-dev -y 
