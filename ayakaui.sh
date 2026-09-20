@@ -16,7 +16,7 @@ echo "=================="
 
 # Local manifests
 
-git clone https://github.com/kitsunee02/local_manifests.git -b main .repo/local_manifests
+git clone https://github.com/kitsunee02/local_manifests.git -b A16 .repo/local_manifests
 
 echo "============================"
 echo "Local manifest clone success"
