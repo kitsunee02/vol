@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -eE
+trap 'echo "❌ FAILED at line $LINENO"' ERR
+
 rm -rf .repo/local_manifests
 rm -rf .repo
 
