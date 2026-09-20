@@ -1,6 +1,7 @@
 #!/bin/bash
 
 rm -rf .repo/local_manifests
+rm -rf .repo
 
 # repo init rom
 repo init -u https://github.com/AyakaUI/android_manifest.git -b sixteen --depth=1 --git-lfs
@@ -9,7 +10,7 @@ echo "Repo init success"
 echo "=================="
 
 # Local manifests
-git clone https://github.com/kitsunee02/local-manifests.git -b main .repo/local_manifests
+git clone https://github.com/kitsunee02/local_manifests.git -b main .repo/local_manifests
 echo "============================"
 echo "Local manifest clone success"
 echo "============================"
@@ -19,7 +20,10 @@ echo "============================"
 echo "============="
 echo "Sync"
 echo "============="
-/opt/crave/resync.sh
+
+/opt/crave/resync.sh;
+
+/opt/crave/resync.sh;
 
 # Installing packages 
 sudo apt-get update && sudo apt-get install patchelf coreutils protobuf-compiler libprotobuf-dev -y 
