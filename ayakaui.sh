@@ -45,42 +45,25 @@ export IGNORE_PATCH_ERRORS=true
 
 echo "======= Export Done ======"
 
-# Go Compatibility Patch System
+# --- Fix: Soong Go compat ---
 SOONG_FILE="build/soong/ui/execution_metrics/execution_metrics.go"
-
 if [ -f "$SOONG_FILE" ]; then
-    echo "🔧 Patching execution_metrics.go safely..."
-
-    # Reset any previous temporary modifications cleanly
-    git checkout -- "$SOONG_FILE" 2>/dev/null || true
-
-    # Inject the classic "sort" package right after the import block starts
-    sed -i '/^import (/a\	"sort"' "$SOONG_FILE"
-
-    # Strip out the modern package imports causing toolchain panic errors
-    sed -i '/"maps"/d; /"slices"/d' "$SOONG_FILE"
-
-    # Replace the modern slices.Sorted line with a classic Go loop and string sort
-    sed -i 's/keys := slices\.Sorted(maps\.Keys(fileCounts))/keys := func() []string { kList := make([]string, 0, len(fileCounts)); for k := range fileCounts { kList = append(kList, k) }; sort.Strings(kList); return kList }()/' "$SOONG_FILE"
-
-    echo "✅ Go compilation code and imports patched successfully!"
+  curl -sSf -o "$SOONG_FILE" "https://raw.githubusercontent.com/kitsunee02/rom-patches/main/execution_metrics.go" \
+    && echo "✅ Soong file replaced" \
+    || echo "⚠️ Failed to download execution_metrics.go fix, keeping original"
 else
-    echo "⚠️ $SOONG_FILE not found, skipping Go patch."
+  echo "⚠️ $SOONG_FILE not found, skipping."
 fi
 
-# Preparing target paths
-mkdir -p device/xiaomi/blossom-kernel/modules
-
-# Audio blueprint clean conditional statement
+# --- Fix: Audio HAL Android.bp ---
 AUDIO_BP="hardware/interfaces/audio/common/all-versions/default/Android.bp"
 if [ -f "$AUDIO_BP" ]; then
-    echo "🔧 Fixing Audio select type condition..."
-    sed -i 's/"true":/true:/g' "$AUDIO_BP"
-    echo "✅ Audio Android.bp patched!"
+  curl -sSf -o "$AUDIO_BP" "https://raw.githubusercontent.com/kitsunee02/rom-patches/main/Android.bp" \
+    && echo "✅ Audio file replaced" \
+    || echo "⚠️ Failed to download Android.bp fix, keeping original"
 else
-    echo "⚠️ Audio Android.bp not found, skipping patch."
+  echo "⚠️ $AUDIO_BP not found, skipping."
 fi
-
 # Set up build environment
 source build/envsetup.sh
 
