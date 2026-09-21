@@ -53,7 +53,30 @@ echo "======= Export Done ======"
 
 #Go fix
 
-SOONG_FILE="build/soong/ui/execution_metrics/execution_metrics.go"; git checkout -- "$SOONG_FILE" 2>/dev/null; [ -f "$SOONG_FILE" ] && (echo "🔧 Re-patching execution_metrics.go safely..."; grep -q '"sort"' "$SOONG_FILE" || sed -i '/^import (/a\    "sort"' "$SOONG_FILE"; sed -i '/"maps"/d; /"slices"/d' "$SOONG_FILE"; sed -i 's/slices\.Sorted(maps\.Keys(\([^)]*\)))/func() []string { keys := make([]string, 0, len(\1)); for k := range \1 { keys = append(keys, k) }; sort.Strings(keys); return keys }()/' "$SOONG_FILE"; echo "✅ Fixed and patched successfully!") || echo "❌ Soong execution_metrics.go not found!"
+SOONG_FILE="build/soong/ui/execution_metrics/execution_metrics.go"
+
+if [ -f "$SOONG_FILE" ]; then
+    echo "🔧 Re-patching execution_metrics.go safely..."
+
+    # Reset any previous modifications to the file safely
+    git checkout -- "$SOONG_FILE" 2>/dev/null || true
+
+    # Safely inject the "sort" import if it doesn't already exist
+    if ! grep -q '"sort"' "$SOONG_FILE"; then
+        sed -i '/^import (/a\    "sort"' "$SOONG_FILE"
+    fi
+
+    # Remove modern Go maps/slices imports causing problems on older Go toolchains
+    sed -i '/"maps"/d; /"slices"/d' "$SOONG_FILE"
+
+    # Replace modern slices.Sorted syntax with backwards-compatible loop sorting
+    sed -i 's/slices\.Sorted(maps\.Keys(\([^)]*\)))/func() []string { keys := make([]string, 0, len(\1)); for k := range \1 { keys = append(keys, k) }; sort.Strings(keys); return keys }()/' "$SOONG_FILE"
+
+    echo "✅ Fixed and patched successfully!"
+else
+    echo "⚠️ $SOONG_FILE not found, skipping Go patch."
+fi
+
 
 #Making kernel modules dir
 
