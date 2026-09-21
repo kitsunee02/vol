@@ -3,46 +3,40 @@
 set -eE
 trap 'echo "❌ FAILED at line $LINENO"' ERR
 
+# Clean working tree parameters
 rm -rf .repo/local_manifests
 rm -rf .repo
 
-# repo init rom
-
+# Initialize ROM manifest
 repo init -u https://github.com/AyakaUI/android_manifest.git -b sixteen --depth=1 --git-lfs
 
 echo "=================="
 echo "Repo init success"
 echo "=================="
 
-# Local manifests
-
+# Clone local manifests
 git clone https://github.com/kitsunee02/local_manifests.git -b A16 .repo/local_manifests
 
 echo "============================"
 echo "Local manifest clone success"
 echo "============================"
 
-# Build Sync
-# curl -sf https://raw.githubusercontent.com/xc112lg/lg_releases/refs/heads/main/resync.sh | bash
-
 echo "============="
 echo "Sync"
 echo "============="
 
+# Execute workspace sync pipeline once cleanly
+/opt/crave/resync.sh
 /opt/crave/resync.sh
 
-/opt/crave/resync.sh
-
-# Installing packages 
-
+# Installing required packages
 sudo apt-get update && sudo apt-get install patchelf coreutils -y 
 
 echo "============="
 echo "packages done"
 echo "============="
 
-# Export
-
+# Environmental configurations
 export BUILD_USERNAME=Fiyuu
 export TARGET_BUILD_GAPPS=false
 export BUILD_HOSTNAME=crave
@@ -51,51 +45,49 @@ export IGNORE_PATCH_ERRORS=true
 
 echo "======= Export Done ======"
 
-#Go fix
-
+# Go Compatibility Patch System
 SOONG_FILE="build/soong/ui/execution_metrics/execution_metrics.go"
 
 if [ -f "$SOONG_FILE" ]; then
-    echo "🔧 Re-patching execution_metrics.go safely..."
+    echo "🔧 Patching execution_metrics.go safely..."
 
-    # Reset any previous modifications to the file safely
+    # Reset any previous temporary modifications cleanly
     git checkout -- "$SOONG_FILE" 2>/dev/null || true
 
-    # Safely inject the "sort" import if it doesn't already exist
-    if ! grep -q '"sort"' "$SOONG_FILE"; then
-        sed -i '/^import (/a\    "sort"' "$SOONG_FILE"
-    fi
+    # Inject the classic "sort" package right after the import block starts
+    sed -i '/^import (/a\	"sort"' "$SOONG_FILE"
 
-    # Remove modern Go maps/slices imports causing problems on older Go toolchains
+    # Strip out the modern package imports causing toolchain panic errors
     sed -i '/"maps"/d; /"slices"/d' "$SOONG_FILE"
 
-    # Replace modern slices.Sorted syntax with backwards-compatible loop sorting
-    sed -i 's/slices\.Sorted(maps\.Keys(\([^)]*\)))/func() []string { keys := make([]string, 0, len(\1)); for k := range \1 { keys = append(keys, k) }; sort.Strings(keys); return keys }()/' "$SOONG_FILE"
+    # Replace the modern slices.Sorted line with a classic Go loop and string sort
+    sed -i 's/keys := slices\.Sorted(maps\.Keys(fileCounts))/keys := func() []string { kList := make([]string, 0, len(fileCounts)); for k := range fileCounts { kList = append(kList, k) }; sort.Strings(kList); return kList }()/' "$SOONG_FILE"
 
-    echo "✅ Fixed and patched successfully!"
+    echo "✅ Go compilation code and imports patched successfully!"
 else
     echo "⚠️ $SOONG_FILE not found, skipping Go patch."
 fi
 
-
-#Making kernel modules dir
-
+# Preparing target paths
 mkdir -p device/xiaomi/blossom-kernel/modules
 
-#Fixing audio files
-
-AUDIO_BP="hardware/interfaces/audio/common/all-versions/default/Android.bp"; [ -f "$AUDIO_BP" ] && (echo "🔧 Fixing Audio select type condition..."; sed -i 's/"true":/true:/g' "$AUDIO_BP"; echo "✅ Audio Android.bp patched!") || echo "⚠️ Audio Android.bp not found, skipping patch."
+# Audio blueprint clean conditional statement
+AUDIO_BP="hardware/interfaces/audio/common/all-versions/default/Android.bp"
+if [ -f "$AUDIO_BP" ]; then
+    echo "🔧 Fixing Audio select type condition..."
+    sed -i 's/"true":/true:/g' "$AUDIO_BP"
+    echo "✅ Audio Android.bp patched!"
+else
+    echo "⚠️ Audio Android.bp not found, skipping patch."
+fi
 
 # Set up build environment
-
 source build/envsetup.sh
 
 echo "============="
 
-# Lunch
-
+# Target profile configuration
 lunch lineage_blossom-bp2a-userdebug
 
-# Build
-
+# Execute optimization build pipeline
 m bacon
