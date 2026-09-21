@@ -5,7 +5,6 @@ trap 'echo "❌ FAILED at line $LINENO"' ERR
 
 # Clean working tree parameters
 rm -rf .repo/local_manifests
-rm -rf .repo
 
 # Initialize ROM manifest
 repo init -u https://github.com/AyakaUI/android_manifest.git -b sixteen --depth=1 --git-lfs
