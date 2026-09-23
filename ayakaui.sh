@@ -42,6 +42,16 @@ export BUILD_HOSTNAME=crave
 export BUILD_BROKEN_MISSING_REQUIRED_MODULES=true
 export IGNORE_PATCH_ERRORS=true
 
+#git am patches
+
+git -C frameworks/av am --abort 2>/dev/null || true
+git -C frameworks/base am --abort 2>/dev/null || true
+git -C hardware/interfaces am --abort 2>/dev/null || true
+git -C packages/modules/Bluetooth am --abort 2>/dev/null || true
+git -C build/soong am --abort 2>/dev/null || true
+git -C system/sepolicy am --abort 2>/dev/null || true
+
+
 echo "======= Export Done ======"
 
 # --- Fix: Soong Go compat ---
@@ -72,4 +82,4 @@ echo "============="
 lunch lineage_blossom-bp2a-userdebug
 
 # Execute optimization build pipeline
-m bacon
+m
