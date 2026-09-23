@@ -73,13 +73,51 @@ if [ -f "$AUDIO_BP" ]; then
 else
   echo "⚠️ $AUDIO_BP not found, skipping."
 fi
+
+#Some fixes according to ayaka ui bring up 
+
+DEVICE_DIR="device/xiaomi/blossom"
+
+if [ -f "$DEVICE_DIR/AndroidProducts.mk" ] && [ -f "$DEVICE_DIR/lineage_blossom.mk" ]; then
+  echo "🔧 Adapting blossom device tree for AyakaUI..."
+
+  mv "$DEVICE_DIR/lineage_blossom.mk" "$DEVICE_DIR/ayaka_blossom.mk"
+
+  cat > "$DEVICE_DIR/AndroidProducts.mk" <<'EOF'
+PRODUCT_MAKEFILES := \
+    $(LOCAL_DIR)/ayaka_blossom.mk
+
+COMMON_LUNCH_CHOICES := \
+    ayaka_blossom-user \
+    ayaka_blossom-userdebug \
+    ayaka_blossom-eng
+EOF
+
+  sed -i 's|vendor/lineage/config/common_full_phone.mk|vendor/custom/config/common_full_phone.mk|' "$DEVICE_DIR/ayaka_blossom.mk"
+  sed -i 's|# Inherit some common Lineage stuff.|# Inherit some common PixelOS stuff.|' "$DEVICE_DIR/ayaka_blossom.mk"
+  sed -i 's|PRODUCT_NAME := lineage_blossom|PRODUCT_NAME := ayaka_blossom|' "$DEVICE_DIR/ayaka_blossom.mk"
+
+  cat >> "$DEVICE_DIR/ayaka_blossom.mk" <<'EOF'
+
+AYAKA_MAINTAINER := Fiyuu
+WITH_GMS := false
+IS_OFFICIAL := false
+EOF
+
+  rm -f "$DEVICE_DIR/lineage.dependencies"
+
+  echo "✅ Device tree adapted to ayaka_blossom"
+else
+  echo "⚠️ Expected device tree files not found, skipping adaptation."
+fi
+
 # Set up build environment
 source build/envsetup.sh
 
 echo "============="
 
 # Target profile configuration
-lunch lineage_blossom-bp2a-userdebug
+lunch ayaka_blossom-bp2a-userdebug
 
 # Execute optimization build pipeline
-m
+m bacon
