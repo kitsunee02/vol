@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eE
+set -E
 trap 'echo "❌ FAILED at line $LINENO"' ERR
 
 # Clean working tree parameters
@@ -52,6 +52,7 @@ git -C packages/modules/Bluetooth am --abort 2>/dev/null || true
 git -C build/soong am --abort 2>/dev/null || true
 git -C system/sepolicy am --abort 2>/dev/null || true
 
+rm  -rf packages/apps/SimpleSettingsConfig
 
 echo "======= Export Done ======"
 
@@ -111,6 +112,8 @@ EOF
 else
   echo "⚠️ Expected device tree files not found, skipping adaptation."
 fi
+
+set -e
 
 # Set up build environment
 source build/envsetup.sh
