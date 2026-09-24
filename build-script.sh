@@ -42,8 +42,6 @@ export BUILD_HOSTNAME=crave
 export BUILD_BROKEN_MISSING_REQUIRED_MODULES=true
 export IGNORE_PATCH_ERRORS=true
 
-rm -rf packages/apps/SimpleSettingsConfig
-
 #git am patches
 
 git -C frameworks/av am --abort 2>/dev/null || true
