@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eE
+set -E
 trap 'echo "❌ FAILED at line $LINENO"' ERR
 
 # Clean working tree parameters
@@ -113,6 +113,9 @@ echo "✅ Device tree adapted to ayaka_blossom"
 else
 echo "⚠️ Expected device tree files not found, skipping adaptation."
 fi
+
+
+set -e 
 
 # Set up build environment
 source build/envsetup.sh
