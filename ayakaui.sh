@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -E
+set -eE
 trap 'echo "❌ FAILED at line $LINENO"' ERR
 
 # Clean working tree parameters
@@ -43,6 +43,8 @@ export BUILD_HOSTNAME=crave
 export BUILD_BROKEN_MISSING_REQUIRED_MODULES=true
 export IGNORE_PATCH_ERRORS=true
 
+rm -rf packages/apps/SimpleSettingsConfig
+
 #git am patches
 
 git -C frameworks/av am --abort 2>/dev/null || true
@@ -52,28 +54,27 @@ git -C packages/modules/Bluetooth am --abort 2>/dev/null || true
 git -C build/soong am --abort 2>/dev/null || true
 git -C system/sepolicy am --abort 2>/dev/null || true
 
-rm  -rf packages/apps/SimpleSettingsConfig
 
 echo "======= Export Done ======"
 
 # --- Fix: Soong Go compat ---
 SOONG_FILE="build/soong/ui/execution_metrics/execution_metrics.go"
 if [ -f "$SOONG_FILE" ]; then
-  curl -sSf -o "$SOONG_FILE" "https://raw.githubusercontent.com/kitsunee02/rom-patches/main/execution_metrics.go" \
-    && echo "✅ Soong file replaced" \
-    || echo "⚠️ Failed to download execution_metrics.go fix, keeping original"
+curl -sSf -o "$SOONG_FILE" "https://raw.githubusercontent.com/kitsunee02/rom-patches/main/execution_metrics.go" \
+&& echo "✅ Soong file replaced" \
+|| echo "⚠️ Failed to download execution_metrics.go fix, keeping original"
 else
-  echo "⚠️ $SOONG_FILE not found, skipping."
+echo "⚠️ $SOONG_FILE not found, skipping."
 fi
 
 # --- Fix: Audio HAL Android.bp ---
 AUDIO_BP="hardware/interfaces/audio/common/all-versions/default/Android.bp"
 if [ -f "$AUDIO_BP" ]; then
-  curl -sSf -o "$AUDIO_BP" "https://raw.githubusercontent.com/kitsunee02/rom-patches/main/Android.bp" \
-    && echo "✅ Audio file replaced" \
-    || echo "⚠️ Failed to download Android.bp fix, keeping original"
+curl -sSf -o "$AUDIO_BP" "https://raw.githubusercontent.com/kitsunee02/rom-patches/main/Android.bp" \
+&& echo "✅ Audio file replaced" \
+|| echo "⚠️ Failed to download Android.bp fix, keeping original"
 else
-  echo "⚠️ $AUDIO_BP not found, skipping."
+echo "⚠️ $AUDIO_BP not found, skipping."
 fi
 
 #Some fixes according to ayaka ui bring up 
@@ -81,39 +82,37 @@ fi
 DEVICE_DIR="device/xiaomi/blossom"
 
 if [ -f "$DEVICE_DIR/AndroidProducts.mk" ] && [ -f "$DEVICE_DIR/lineage_blossom.mk" ]; then
-  echo "🔧 Adapting blossom device tree for AyakaUI..."
+echo "🔧 Adapting blossom device tree for AyakaUI..."
 
-  mv "$DEVICE_DIR/lineage_blossom.mk" "$DEVICE_DIR/ayaka_blossom.mk"
+mv "$DEVICE_DIR/lineage_blossom.mk" "$DEVICE_DIR/ayaka_blossom.mk"
 
-  cat > "$DEVICE_DIR/AndroidProducts.mk" <<'EOF'
+cat > "$DEVICE_DIR/AndroidProducts.mk" <<'EOF'
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/ayaka_blossom.mk
+   $(LOCAL_DIR)/ayaka_blossom.mk
 
 COMMON_LUNCH_CHOICES := \
-    ayaka_blossom-user \
-    ayaka_blossom-userdebug \
-    ayaka_blossom-eng
+   ayaka_blossom-user \
+   ayaka_blossom-userdebug \
+   ayaka_blossom-eng
 EOF
 
-  sed -i 's|vendor/lineage/config/common_full_phone.mk|vendor/custom/config/common_full_phone.mk|' "$DEVICE_DIR/ayaka_blossom.mk"
-  sed -i 's|# Inherit some common Lineage stuff.|# Inherit some common PixelOS stuff.|' "$DEVICE_DIR/ayaka_blossom.mk"
-  sed -i 's|PRODUCT_NAME := lineage_blossom|PRODUCT_NAME := ayaka_blossom|' "$DEVICE_DIR/ayaka_blossom.mk"
+sed -i 's|vendor/lineage/config/common_full_phone.mk|vendor/custom/config/common_full_phone.mk|' "$DEVICE_DIR/ayaka_blossom.mk"
+sed -i 's|# Inherit some common Lineage stuff.|# Inherit some common PixelOS stuff.|' "$DEVICE_DIR/ayaka_blossom.mk"
+sed -i 's|PRODUCT_NAME := lineage_blossom|PRODUCT_NAME := ayaka_blossom|' "$DEVICE_DIR/ayaka_blossom.mk"
 
-  cat >> "$DEVICE_DIR/ayaka_blossom.mk" <<'EOF'
+cat >> "$DEVICE_DIR/ayaka_blossom.mk" <<'EOF'
 
 AYAKA_MAINTAINER := Fiyuu
 WITH_GMS := false
 IS_OFFICIAL := false
 EOF
 
-  rm -f "$DEVICE_DIR/lineage.dependencies"
+rm -f "$DEVICE_DIR/lineage.dependencies"
 
-  echo "✅ Device tree adapted to ayaka_blossom"
+echo "✅ Device tree adapted to ayaka_blossom"
 else
-  echo "⚠️ Expected device tree files not found, skipping adaptation."
+echo "⚠️ Expected device tree files not found, skipping adaptation."
 fi
-
-set -e
 
 # Set up build environment
 source build/envsetup.sh
