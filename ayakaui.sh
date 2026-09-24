@@ -38,6 +38,7 @@ echo "============="
 
 # Environmental configurations
 export BUILD_USERNAME=Fiyuu
+export WITH_GMS=false
 export TARGET_BUILD_GAPPS=false
 export BUILD_HOSTNAME=crave
 export BUILD_BROKEN_MISSING_REQUIRED_MODULES=true
@@ -124,6 +125,14 @@ echo "============="
 
 # Target profile configuration
 lunch ayaka_blossom-bp2a-userdebug
+
+#forcing build configuration
+echo "===== Build configuration ====="
+echo "TARGET_PRODUCT=$TARGET_PRODUCT"
+echo "TARGET_BUILD_VARIANT=$TARGET_BUILD_VARIANT"
+echo "WITH_GMS=$WITH_GMS"
+echo "TARGET_BUILD_GAPPS=$TARGET_BUILD_GAPPS"
+echo "================================"
 
 # Execute optimization build pipeline
 m bacon
