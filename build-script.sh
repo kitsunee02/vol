@@ -7,7 +7,7 @@ trap 'echo "❌ FAILED at line $LINENO"' ERR
 rm -rf .repo/local_manifests
 
 # Initialize ROM manifest
-repo init -u https://github.com/AviumUI/android_manifests -b avium-16 --depth=1 --git-lfs
+repo init -u https://github.com/AviumUI/android_manifests.git -b avium-16 --depth=1 --git-lfs
 
 echo "=================="
 echo "Repo init success"
