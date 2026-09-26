@@ -54,6 +54,13 @@ git -C system/sepolicy am --abort 2>/dev/null || true
 
 echo "======= Export Done ======"
 
+AUDIO_BP="hardware/interfaces/audio/common/all-versions/default/Android.bp"
+if [ -f "$AUDIO_BP" ]; then
+  curl -sSf -o "$AUDIO_BP" "https://raw.githubusercontent.com/kitsunee02/rom-patches/main/Android.bp" \
+    && echo "✅ Audio Android.bp replaced with verified fix" \
+    || echo "⚠️ Failed to download fix, keeping original"
+fi
+
 
 DEVICE_DIR="device/xiaomi/blossom"
 
