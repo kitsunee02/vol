@@ -54,11 +54,24 @@ git -C system/sepolicy am --abort 2>/dev/null || true
 
 echo "======= Export Done ======"
 
+# --- Verified fixes from rom-patches ---
+
 AUDIO_BP="hardware/interfaces/audio/common/all-versions/default/Android.bp"
 if [ -f "$AUDIO_BP" ]; then
   curl -sSf -o "$AUDIO_BP" "https://raw.githubusercontent.com/kitsunee02/rom-patches/main/Android.bp" \
     && echo "✅ Audio Android.bp replaced with verified fix" \
     || echo "⚠️ Failed to download fix, keeping original"
+fi
+
+# --- Verified fixes from rom-patches ---
+
+SOONG_FILE="build/soong/ui/execution_metrics/execution_metrics.go"
+if [ -f "$SOONG_FILE" ]; then
+  curl -sSf -o "$SOONG_FILE" "https://raw.githubusercontent.com/kitsunee02/rom-patches/main/execution_metrics.go" \
+    && echo "✅ Soong Go-compat file replaced" \
+    || echo "⚠️ Failed to download soong fix, keeping original"
+else
+  echo "⚠️ $SOONG_FILE not found, skipping."
 fi
 
 
