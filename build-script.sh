@@ -101,5 +101,9 @@ source build/envsetup.sh
 # Target profile configuration
 lunch lineage_blossom-bp2a-userdebug
 
+#added for safety
+    rm -f "$DEVICE_DIR/lineage.dependencies"
+    rm -rf hardware/lineage/interfaces/sensors
+
 # Execute optimization build pipeline
 m bacon -j$(nproc --all)
