@@ -90,7 +90,7 @@ if ! grep -q 'avium_common.mk' "$DEVICE_DIR/device.mk"; then
 fi   
 
     rm -f "$DEVICE_DIR/lineage.dependencies"
-    rm -rf hardware/lineage/interfaces/sensors
+    rm -rf hardware/lineage/interfaces/
 
 set -e 
 
