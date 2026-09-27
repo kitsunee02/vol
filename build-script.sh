@@ -74,7 +74,6 @@ else
   echo "⚠️ $SOONG_FILE not found, skipping."
 fi
 
-
 DEVICE_DIR="device/xiaomi/blossom"
 
 # Create avium_common.mk
@@ -91,7 +90,8 @@ if ! grep -q 'avium_common.mk' "$DEVICE_DIR/device.mk"; then
 fi   
 
     rm -f "$DEVICE_DIR/lineage.dependencies"
-  
+    rm -rf hardware/lineage/interfaces/sensors
+
 set -e 
 
 # Set up build environment
