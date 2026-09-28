@@ -52,6 +52,12 @@ grep -q 'avium_common.mk' "$DEVICE_DIR/device.mk" || \
 
 rm -f "$DEVICE_DIR/lineage.dependencies"
 
+echo "===== checking for more duplicate modules =====" #im tired of logs and build fail for every duplicate modules
+grep -rhoE 'name: "[^"]+"' hardware/lineage/interfaces --include=Android.bp | sort -u > /tmp/a.txt
+grep -rhoE 'name: "[^"]+"' device/xiaomi/blossom hardware/mediatek vendor/xiaomi/blossom --include=Android.bp | sort -u > /tmp/b.txt
+comm -12 /tmp/a.txt /tmp/b.txt || true
+echo "===== Check done ====="
+
 set -e
 source build/envsetup.sh
 lunch lineage_blossom-bp2a-userdebug
