@@ -31,7 +31,7 @@ echo "===== Repo Sync ====="
 echo "===== Installing packages ====="
 
 sudo apt-get update
-sudo apt-get install -y patchelf coreutils
+sudo apt-get install -y patchelf coreutils ccache
 
 echo "===== Build Variables ====="
 
@@ -70,8 +70,10 @@ fi
 
 echo "===== Removing Generic Conflicting Interfaces ====="
 
+rm -rf hardware/interfaces/biometrics/fingerprint/2.1/default
 rm -rf hardware/lineage/interfaces/sensors
 rm -rf hardware/lineage/interfaces/biometrics/fingerprint
+
 
 echo "===== Blossom Configuration ====="
 
