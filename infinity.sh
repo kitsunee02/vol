@@ -18,9 +18,6 @@ export IGNORE_PATCH_ERRORS=true
 
 echo "Device: $DEVICE | Android: $ANDROID_VERSION"
 
-# ==========================================
-# Sync
-# ==========================================
 sync_repositories() {
     echo "[repo init]"
     repo init --depth=1 --no-repo-verify --git-lfs -u $REPO_INIT_URL -b $REPO_INIT_BRANCH -g default,-mips,-darwin,-notdefault
@@ -31,9 +28,6 @@ sync_repositories() {
     /opt/crave/resync.sh
 }
 
-# ==========================================
-# Fix
-# ==========================================
 rom_fix() {
     echo "[fix] applying..."
     
@@ -55,9 +49,18 @@ rom_fix() {
     echo "[fix] done"
 }
 
-# ==========================================
-# Compile
-# ==========================================
+sign_keys() {
+    echo "[sign] cloning keys..."
+    git clone --depth=1 https://github.com/kitsunee02/android_vendor_lineage-priv_keys vendor/lineage-priv/keys
+    cd vendor/lineage-priv/keys
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install pyOpenSSL cryptography
+    ./gen_keys.py
+    cd -
+    echo "[sign] done"
+}   
+
 compile_rom() {
     export TZ="Asia/Kolkata"
 
@@ -78,4 +81,5 @@ compile_rom() {
 
 sync_repositories
 rom_fix
+sign_keys
 compile_rom   
