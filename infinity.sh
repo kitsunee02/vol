@@ -46,6 +46,18 @@ rom_fix() {
     curl -sSfL -o "device/xiaomi/blossom/system.prop" \
     "https://raw.githubusercontent.com/kitsunee02/rom-patches/main/infinity_system.prop"
 
+    rm -rf hardware/lineage/interfaces/sensors
+    rm -rf hardware/lineage/interfaces/biometrics/fingerprint
+    rm -rf hardware/interfaces/biometrics/fingerprint/2.1/default
+
+    git -C frameworks/av am --abort 2>/dev/null || true
+    git -C frameworks/base am --abort 2>/dev/null || true
+    git -C hardware/interfaces am --abort 2>/dev/null || true
+    git -C packages/modules/Bluetooth am --abort 2>/dev/null || true
+    git -C build/soong am --abort 2>/dev/null || true
+    git -C system/sepolicy am --abort 2>/dev/null || true
+    git -C hardware/mediatek am --abort 2>/dev/null || true
+
     echo "[fix] done"
 }
 
