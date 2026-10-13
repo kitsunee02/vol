@@ -143,7 +143,7 @@ rom_fix() {
     fi
 
     EDIFY_GENERATOR="build/make/tools/releasetools/edify_generator.py"
-    EDIFY_GENERATOR_URL=""
+    EDIFY_GENERATOR_URL="https://raw.githubusercontent.com/kitsunee02/rom-patches/refs/heads/main/luna16/edify_generator.py"
 
     if [ -f "$EDIFY_GENERATOR" ]; then
         if [ -n "$EDIFY_GENERATOR_URL" ]; then
@@ -176,7 +176,7 @@ rom_fix() {
     done
 
     LUNARIS_MK="vendor/lineage/config/lunaris.mk"
-    LUNARIS_MK_URL=""
+    LUNARIS_MK_URL="https://raw.githubusercontent.com/kitsunee02/rom-patches/refs/heads/main/luna16/lunaris.mk"
 
     if [ -f "$LUNARIS_MK" ]; then
         if [ -n "$LUNARIS_MK_URL" ]; then
@@ -245,7 +245,7 @@ EOF
 
     GENFS_CONTEXTS_DIR="device/xiaomi/blossom/sepolicy/vendor"
     GENFS_CONTEXTS="$GENFS_CONTEXTS_DIR/genfs_contexts"
-    GENFS_CONTEXTS_URL=""
+    GENFS_CONTEXTS_URL="https://raw.githubusercontent.com/kitsunee02/rom-patches/refs/heads/main/luna16/genfs_contexts"
 
     mkdir -p "$GENFS_CONTEXTS_DIR" || {
         echo "ERROR: Failed to create genfs_contexts directory"
@@ -275,7 +275,7 @@ EOF
     fi
 
     SEAPP_CONTEXTS="device/mediatek/sepolicy_vndr/bsp/plat_private/seapp_contexts"
-    SEAPP_CONTEXTS_URL=""
+    SEAPP_CONTEXTS_URL="https://raw.githubusercontent.com/kitsunee02/rom-patches/refs/heads/main/luna16/seapp_contexts"
 
     if [ -f "$SEAPP_CONTEXTS" ]; then
         if [ -n "$SEAPP_CONTEXTS_URL" ]; then
@@ -290,9 +290,6 @@ EOF
         echo "INFO: Destination not present, skipping Fix 11: $SEAPP_CONTEXTS"
     fi
 
-    rm -rf hardware/lineage/interfaces/sensors
-    rm -rf hardware/lineage/interfaces/biometrics/fingerprint
-    rm -rf hardware/interfaces/biometrics/fingerprint/2.1/default
 
     git -C frameworks/av am --abort 2>/dev/null || true
     git -C frameworks/base am --abort 2>/dev/null || true
