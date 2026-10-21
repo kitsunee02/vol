@@ -8,10 +8,10 @@ MAINTAINER="fiyuu"
 while true; do
     clear
     echo "=================================================="
-    echo "           BUIDLING AVIUM - BLOSSOM               "
+    echo "           BUILDING AVIUM - BLOSSOM               "
     echo "=================================================="
     echo "1) Run Build (envsetup, lunch, m bacon)"
-    echo "2) Run fix script "
+    echo "2) Run fix script"
     echo "3) Exit"
     echo "=================================================="
     read -p "Select an option [1-3]: " choice
@@ -24,12 +24,12 @@ while true; do
             export BUILD_HOSTNAME=kiyuu
             export IGNORE_PATCH_ERRORS=true
             lunch lineage_blossom-bp4a-userdebug
-            m bacon -j$(nproc --all)
+            m bacon -j8
             break
             ;;
         2)
-            echo "[*] Run fix script"
-			curl -sSl https://raw.githubusercontent.com/kitsunee02/rom-patches/refs/heads/main/avium16_2/fix_and_sign.sh  | bash
+            echo "[*] Running fix script..."
+            curl -sSL https://raw.githubusercontent.com/kitsunee02/rom-patches/refs/heads/main/avium16_2/fix_and_sign.sh | bash
             echo "[+] Running fix script done!"
             ;;
         3)
