@@ -29,7 +29,7 @@ while true; do
             ;;
         2)
             echo "[*] Run fix script"
-			
+			curl -sSl https://raw.githubusercontent.com/kitsunee02/rom-patches/refs/heads/main/avium16_2/fix_and_sign.sh  | bash
             echo "[+] Running fix script done!"
             ;;
         3)
